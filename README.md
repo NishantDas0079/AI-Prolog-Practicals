@@ -343,39 +343,103 @@ solve(Rows) :-
 **Goal:** Represent a family using base facts (`parent`, `male`, `female`) and derive relationships (father, mother, sibling, grandparent) through logical rules.
 
 ```prolog
-% Base facts
-male(john).    male(michael).   male(david).
-female(mary).  female(linda).   female(susan).
+male(ramesh).
+female(amrita).
+male(suresh).
+female(saumya).
 
-parent(john, michael).
-parent(mary, michael).
-parent(john, linda).
-parent(mary, linda).
-parent(michael, david).
-parent(linda, susan).
+father(daanish, raaju).
+father(daanish, ramya).
+father(rahul, aditya).
+father(rahul, daisy).
 
-father(F, C)      :- parent(F, C), male(F).
-mother(M, C)       :- parent(M, C), female(M).
-sibling(X, Y)       :- parent(P, X), parent(P, Y), X \= Y.
-grandparent(GP, GC) :- parent(GP, P), parent(P, GC).
-grandfather(GF, GC) :- grandparent(GF, GC), male(GF).
-grandmother(GM, GC) :- grandparent(GM, GC), female(GM).
-uncle(U, C)         :- sibling(U, P), parent(P, C), male(U).
-aunt(A, C)          :- sibling(A, P), parent(P, C), female(A).
+mother(sangeeta, raaju).
+mother(sangeeta, ramya).
+mother(nandini, aditya).
+mother(nandini, daisy).
+
+fatherkimother(amrita, daanish).   % amrita is daanish's father's mother
+fatherkafather(ramesh, daanish).   % ramesh is daanish's father's father
+
+mummykimummy(saumya, sangeeta).    % saumya is sangeeta's mother's mother
+mummykepapa(suresh, sangeeta).     % suresh is sangeeta's mother's father
+
+% -------- Sibling Rules --------
+sister(X, Y) :-
+    female(X),
+    father(A, X),
+    father(A, Y),
+    mother(B, X),
+    mother(B, Y).
+
+brother(C, D) :-
+    male(C),
+    father(A, C),
+    father(A, D),
+    mother(B, C),
+    mother(B, D).
+
+% -------- Grandparent Rules --------
+grandfather(F, G) :-
+    male(F),
+    fatherkafather(F, A),
+    father(A, G).
+
+grandmother(M, H) :-
+    female(M),
+    fatherkimother(M, A),
+    father(A, H).
+
+% -------- Generic Parent Rule --------
+parent(L, P) :-
+    father(L, P);
+    mother(L, P);
+    fatherkimother(L, P);
+    fatherkafather(L, P).
+
+grandparent(Q, R) :-
+    parent(Q, S);
+    parent(S, R).
+
+% ===============================================
+% NEW: Ancestor Rule
+% Reaches back 4 generations: parent, grandparent,
+% great-grandparent, and great-great-grandparent
+% ===============================================
+
+% 1 generation back -> parent
+ancestor(X, Y) :-
+    parent(X, Y).
+
+% 2 generations back -> grandparent
+ancestor(X, Y) :-
+    parent(X, Z1),
+    parent(Z1, Y).
+
+% 3 generations back -> great-grandparent
+ancestor(X, Y) :-
+    parent(X, Z1),
+    parent(Z1, Z2),
+    parent(Z2, Y).
+
+% 4 generations back -> great-great-grandparent
+ancestor(X, Y) :-
+    parent(X, Z1),
+    parent(Z1, Z2),
+    parent(Z2, Z3),
+    parent(Z3, Y).
+
 ```
 
 **Sample Run**
 ```prolog
-?- father(john, X).
-X = michael ;
-X = linda.
-
-?- grandparent(john, X).
-X = david ;
-X = susan.
-
-?- sibling(michael, linda).
-true.
+% ?- sister(ramya, raaju).
+% ?- grandfather(ramesh, raaju).
+% ?- grandmother(amrita, ramya).
+% ?- parent(daanish, raaju).
+% ?- ancestor(ramesh, raaju).      
+% ?- ancestor(daanish, raaju).     
+% ?- ancestor(X, raaju).           
 ```
 
 ---
