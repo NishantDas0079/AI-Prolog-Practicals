@@ -4,7 +4,7 @@
 ![Language](https://img.shields.io/badge/Language-Prolog-blue?style=for-the-badge&logo=prolog)
 ![Semester](https://img.shields.io/badge/Semester-3rd-orange?style=for-the-badge)
 ![Practicals](https://img.shields.io/badge/Practicals-13-success?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=for-the- badge)
 
 > A complete, ready-to-run companion for the **Artificial Intelligence** practical syllabus — covering search algorithms, game playing, constraint satisfaction, knowledge representation, and natural language parsing, all implemented in **SWI-Prolog**.
 
